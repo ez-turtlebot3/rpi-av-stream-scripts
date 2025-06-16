@@ -75,4 +75,4 @@ If you want to stream the video with object detection overlays to both YouTube l
 `python3 stream_object_detection_video_to_both.py`
 
 # Related Projects
-This repository was created as part of the (ez-turtlebot3)[https://github.com/ez-turtlebot3/ez-turtlebot3] project.
+This repository was created as part of the [ez-turtlebot3](https://github.com/ez-turtlebot3/ez-turtlebot3) project.
