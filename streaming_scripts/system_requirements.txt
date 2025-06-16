@@ -1,0 +1,17 @@
+# Required system packages
+ffmpeg
+python3-pip
+python3-opencv
+python3-numpy
+python3-picamera2
+gstreamer1.0-tools
+gstreamer1.0-plugins-good
+gstreamer1.0-plugins-bad
+gstreamer1.0-plugins-ugly
+gstreamer1.0-plugins-base
+gstreamer1.0-plugins-rtp
+gstreamer1.0-plugins-rtsp
+gstreamer1.0-plugins-udp
+gstreamer1.0-plugins-alsa
+gstreamer1.0-plugins-x264
+gstreamer1.0-plugins-opus
