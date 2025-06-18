@@ -13,27 +13,13 @@ The following is a list of hardware and software used in developing this project
   * The Raspberry Pi AI Camera is _not_ compatible with Ubuntu 22.
   * We've written our steps to [configure the Camera Module v2 on Ubuntu 22](rpi-av-stream-scripts/CameraModuleV2_Ubuntu22_Setup.md).
 
-# Dependencies and Installation
-
-## System Dependencies
+# Dependencies
 Install the required system packages using your package manager:
 
 ```bash
 # For Raspberry Pi OS or Ubuntu
 sudo apt update
 sudo apt install $(cat streaming_scripts/system_requirements.txt | grep -v '^#' | tr '\n' ' ')
-```
-
-## Python Dependencies
-Install the required Python packages using pip:
-
-```bash
-# Create and activate a virtual environment
-python3 -m venv .venv
-source .venv/bin/activate
-
-# Install dependencies
-pip install -r streaming_scripts/requirements.txt
 ```
 
 # Streaming procedures
