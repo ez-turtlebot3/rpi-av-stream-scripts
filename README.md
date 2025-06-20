@@ -10,14 +10,14 @@
 
 A collection of scripts for streaming multimedia content from Raspberry Pi devices. Support for local network streaming, AWS Kinesis, and YouTube Live with real-time object detection capabilities.
 
-## 🚀 Features
+## 🌐 Streaming Options
 
-- **🎵 Audio Streaming** - Stream audio to remote PCs over local network
-- **📹 Video Streaming** - High-quality video streaming with multiple codec options
-- **🤖 AI Object Detection** - Real-time object detection with overlay streaming
-- **☁️ Cloud Integration** - Stream to AWS Kinesis and YouTube Live
-- **🔄 Multi-Destination** - Stream to multiple destinations simultaneously
-- **⚡ Low Latency** - Optimized for real-time applications
+| Feature | Local Network | AWS Kinesis | YouTube Live |
+|---------|---------------|-------------|--------------|
+| **Audio Streaming** | ✅ | ❌ | ❌ |
+| **Video Streaming** | ✅ | ✅ | ✅ |
+| **Video with Object Detection** | ✅ | ❌ | ✅ |
+| **Setup Complexity** | 🟢 Easy | 🔴 Complex | 🟡 Medium |
 
 ## 📋 Table of Contents
 
@@ -169,7 +169,7 @@ cd streaming_scripts/pc
 ./open_video_stream.sh
 ```
 
-## 🚀 Example Uses
+## 📹 Example Uses
 
 In all of these examples, start from `streaming_scripts/pi` on the pi and `streaming_scripts/pc` on the PC.
 
@@ -231,15 +231,24 @@ The real leg work for streaming to Kinesis happens on the AWS side, which requir
 ./stream_video_to_AWS
 ```
 
-## 🌐 Streaming Options
+### Clean Up
 
-| Feature | Local Network | AWS Kinesis | YouTube Live |
-|---------|---------------|-------------|--------------|
-| **Audio Streaming** | ✅ | ❌ | ❌ |
-| **Video Streaming** | ✅ | ✅ | ✅ |
-| **Object Detection** | ✅ | ❌ | ✅ |
-| **Multi-Destination** | ✅ | ✅ | ✅ |
-| **Setup Complexity** | 🟢 Easy | 🔴 Complex | 🟡 Medium |
+When finished streaming, you can stop the stream in several ways:
+
+**Option 1: Interrupt the stream**
+- Press `Ctrl+C` in the terminal window running the stream
+
+**Option 2: Use stop scripts**
+```bash
+# In a terminal on the pi
+./stop_audio_stream.sh
+./stop_video_stream.sh
+```
+
+The stop scripts are useful when:
+- You want to end the stream from a different terminal window
+- You want to stop multiple streams at once
+- The stream process is running in the background
 
 ## 🤝 Contributing
 
