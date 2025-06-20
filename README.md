@@ -23,14 +23,12 @@ A collection of scripts for streaming multimedia content from Raspberry Pi devic
 
 - [Hardware Requirements](#-hardware-requirements)
 - [Software Requirements](#-software-requirements)
-- [Quick Start](#-quick-start)
-- [Installation](#-installation)
-- [Configuration](#-configuration)
-- [Usage Examples](#-usage-examples)
+- [Set Up Instructions](#-set-up-instructions)
+- [Example Uses](#-example-uses)
 - [Streaming Options](#-streaming-options)
-- [Troubleshooting](#-troubleshooting)
 - [Contributing](#-contributing)
 - [Related Projects](#-related-projects)
+- [License](#-license)
 
 ## 🔧 Hardware Requirements
 
@@ -46,7 +44,7 @@ A collection of scripts for streaming multimedia content from Raspberry Pi devic
 > - Generic USB microphone
 > - Both Raspberry Pi OS x64 and Ubuntu 22.04 LTS
 
-> **⚠️ Compatibility Note:** The Raspberry Pi AI Camera is **not compatible** with Ubuntu 22.04. Use the Camera Module v2 instead.
+> **⚠️ Compatibility Note:** The Raspberry Pi AI Camera is **not compatible** with Ubuntu 22.04. Use the Camera Module v2 instead. We have a setup guide 📖 [Camera Module v2 Ubuntu 22.04 Setup Guide](CameraModuleV2_Ubuntu22_Setup.md)
 
 ## 💻 Software Requirements
 
@@ -74,6 +72,8 @@ The following packages are installed during setup.
 The Raspberry Pi does all the heavy lifting of camera access, image encoding, and streaming.
 
 ```bash
+# Install with: sudo apt install $(cat streaming_scripts/pi/pi_requirements.txt | grep -v '^#' | tr '\n' ' ')
+
 ffmpeg                   # Video/audio processing
 python3-pip              # Python package manager
 python3-opencv           # Computer vision library
@@ -84,135 +84,152 @@ gstreamer1.0-plugins-*   # Various codec plugins
 ```
 
 #### PC Requirements
-For receiving streams on your PC, you only need GStreamer:
+
+For receiving streams on your PC, you only need GStreamer.
 
 ```bash
-# Essential GStreamer packages for video/audio streaming
+# Install with: sudo apt install $(cat streaming_scripts/pc/pc_requirements.txt | grep -v '^#' | tr '\n' ' ')
+
 gstreamer1.0-tools        # gst-launch-1.0 command
 gstreamer1.0-plugins-base # Core plugins (udpsrc, videoconvert, etc.)
 gstreamer1.0-plugins-good # RTP plugins (rtph264depay, rtpopusdepay)
 gstreamer1.0-plugins-bad  # Codec plugins (h264parse, opusdec)
 ```
 
-> **💡 Note:** The PC scripts use `gst-launch-1.0` to receive and play streams. These packages provide all the necessary plugins for RTP video/audio streaming.
+## 👷 Set Up Instructions
 
-## 👷 Set Up Instructions TODO: Separate PC and Pi
+### Raspberry Pi Setup
 
-### 1. Clone the Repository
+#### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/ez-turtlebot3/rpi-av-stream-scripts.git
 cd rpi-av-stream-scripts
 ```
 
-### 2. Install Dependencies
+#### 2. Install Dependencies
 
 ```bash
 sudo apt update
-sudo apt install $(cat streaming_scripts/system_requirements.txt | grep -v '^#' | tr '\n' ' ')
+sudo apt install $(cat streaming_scripts/pi/pi_requirements.txt | grep -v '^#' | tr '\n' ' ')
 ```
 
-### 3. Configure Environment Variables
+#### 3. Configure Environment Variables
 
-Copy the export statements from `pc/bashrc_exports.pc.example` to your PC's `~/.bashrc`. You probably don't need to edit these.
 ```bash
-# On PC
-cd streamin
+# Add export statements to bashrc
+cat streaming_scripts/pi/bashrc_exports.pi.example >> ~/.bashrc
+nano ~/.bashrc
 ```
 
-
-on your PC and pi/bashrc_exports.pi.example to your ~/.bashrc on your pi. Remember to source the new bashrc files after you edit them :)
+Now scroll to the bottom of the `~/.bashrc` and adjust these values suit your hardware, software environment, and streaming preferences. Most importantly, make sure the `REMOTE_PC_IP` address matches the IP address of the PC you want to stream to. Save and exit, then source the edited file:
 
 ```bash
-# On Raspberry Pi
-cp streaming_scripts/pi/bashrc_exports.pi.example ~/.bashrc_exports
-echo "source ~/.bashrc_exports" >> ~/.bashrc
-
-# On PC
-cp streaming_scripts/pc/bashrc_exports.pc.example ~/.bashrc_exports
-echo "source ~/.bashrc_exports" >> ~/.bashrc
-
-# Reload configuration
+# Reload bashrc
 source ~/.bashrc
 ```
 
-### 4. Test stream
+### PC Setup
+
+#### 1. Clone the Repository
 
 ```bash
-# Navigate to scripts directory
-cd streaming_scripts/pi
-
-# Stream video to PC
-./stream_video_to_pc.sh
+git clone https://github.com/ez-turtlebot3/rpi-av-stream-scripts.git
+cd rpi-av-stream-scripts
 ```
 
-## 📁 Project Structure
+#### 2. Install GStreamer Dependencies
 
-```
-rpi-av-stream-scripts/
-├── 📂 streaming_scripts/
-│   ├── 📂 pi/                    # Raspberry Pi scripts
-│   │   ├── 🎵 stream_audio_to_pc.sh
-│   │   ├── 📹 stream_video_to_pc.sh
-│   │   ├── 🤖 stream_object_detection_video_to_pc.py
-│   │   ├── ☁️ stream_video_to_AWS.sh
-│   │   └── 📺 stream_object_detection_video_to_YT.py
-│   └── 📂 pc/                    # PC receiver scripts
-│       ├── 🎵 open_audio_stream.sh
-│       └── 📹 open_video_stream.sh
-├── 📋 system_requirements.txt
-└── 📖 README.md
-```
-
-## 🎯 Usage Examples
-
-### Basic Video Streaming
-
-**On Raspberry Pi:**
 ```bash
+sudo apt update
+sudo apt install $(cat streaming_scripts/pc/pc_requirements.txt | grep -v '^#' | tr '\n' ' ')
+```
+
+#### 3. Configure Environment Variables
+
+```bash
+# Add export statements to bashrc
+cat streaming_scripts/pc/bashrc_exports.pc.example >> ~/.bashrc
+
+# Most likely you will not have to change these export values
+
+# Reload bashrc
+source ~/.bashrc
+```
+
+### 4. Test Stream
+
+```bash
+# On Raspberry Pi
 cd streaming_scripts/pi
 ./stream_video_to_pc.sh
-```
 
-**On PC:**
-```bash
+# On PC
 cd streaming_scripts/pc
 ./open_video_stream.sh
 ```
 
-### AI Object Detection Streaming
+## 🚀 Example Uses
 
-**On Raspberry Pi:**
+In all of these examples, start from `streaming_scripts/pi` on the pi and `streaming_scripts/pc` on the PC.
+
 ```bash
+# On the pi
 cd streaming_scripts/pi
-python3 stream_object_detection_video_to_pc.py
-```
 
-**On PC:**
-```bash
+# On the PC
 cd streaming_scripts/pc
-./open_video_stream.sh
 ```
 
-### YouTube Live Streaming
+### Local Network Streaming
+
+| Stream Type | Pi Command | PC Command |
+|---------|---------------|-------------|
+| Audio| ./stream_audio_to_pc.sh | ./open_audio_stream.sh |
+| Video | ./stream_video_to_pc.sh | ./open_video_stream.sh |
+| Video w/ Object Detection | python3 stream_object_detection_video_to_pc.py | ./open_video_stream.sh |
+
+### Cloud Streaming
+
+### YouTube Live Streaming with Object Detection
 
 1. **Setup YouTube Channel:**
-   - Create/verify YouTube channel
-   - Enable live streaming (first-time approval required)
-   - Get stream key from [YouTube Studio](https://studio.youtube.com)
+   - Create a YouTube channel and get approved for live streaming.
+     - The first time you use a channel to go live YouTube starts a 24 hour approval process.
+   - Open [YouTube Studio](https://studio.youtube.com)
+   - Go live
+     - When given the option of how you want to go live, select streaming software
+   - Copy the stream key
 
 2. **Configure Stream Key:**
+   - On the Raspberry Pi, open the `~/.bashrc`
    ```bash
-   # Add to ~/.bashrc
+   nano ~/.bashrc
+   ```
+    - Edit this line:
+   ```
    export YT_STREAM_KEY="your-stream-key-here"
+   ```
+    - Save and exit, then source the edited file.
+   ```
    source ~/.bashrc
    ```
 
-3. **Start Streaming:**
+3. **Start Streaming from the Pi:**
    ```bash
-   cd streaming_scripts/pi
    python3 stream_object_detection_video_to_YT.py
    ```
+
+4. **Enjoy the show**
+    - YouTube should show the Raspberry Pi camera feed with object detection overlays after a few seconds
+
+### AWS Kinesis Video Streaming
+The real leg work for streaming to Kinesis happens on the AWS side, which requires following the [Amazon Kinesis Developer Guide for Raspberry Pi](https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/producersdk-cpp-rpi.html). Once you've finished with that guide, you probably won't need this script! Here it is anyway 😁
+1. Edit the `AWS credentials` section of your `~/.bashrc` to match your real AWS credentials.
+2. Run this script:
+```
+./stream_video_to_AWS
+```
 
 ## 🌐 Streaming Options
 
@@ -221,81 +238,8 @@ cd streaming_scripts/pc
 | **Audio Streaming** | ✅ | ❌ | ❌ |
 | **Video Streaming** | ✅ | ✅ | ✅ |
 | **Object Detection** | ✅ | ❌ | ✅ |
-| **Multi-Destination** | ✅ | ❌ | ✅ |
+| **Multi-Destination** | ✅ | ✅ | ✅ |
 | **Setup Complexity** | 🟢 Easy | 🔴 Complex | 🟡 Medium |
-
-### Local Network Streaming
-
-- **Audio:** `stream_audio_to_pc.sh` → `open_audio_stream.sh`
-- **Video:** `stream_video_to_pc.sh` → `open_video_stream.sh`
-- **AI Video:** `stream_object_detection_video_to_pc.py` → `open_video_stream.sh`
-
-### Cloud Streaming
-
-- **AWS Kinesis:** Requires [AWS setup guide](https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/producersdk-cpp-rpi.html)
-- **YouTube Live:** Requires channel approval and stream key
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Key variables to configure in your `~/.bashrc`:
-
-```bash
-# Network configuration
-export PC_IP="192.168.1.100"        # Your PC's IP address
-export PI_IP="192.168.1.101"         # Your Pi's IP address
-export STREAM_PORT="5000"            # Streaming port
-
-# YouTube configuration
-export YT_STREAM_KEY="your-key"      # YouTube stream key
-
-# AWS configuration (if using Kinesis)
-export AWS_REGION="us-east-1"        # AWS region
-export AWS_ACCESS_KEY="your-key"     # AWS access key
-```
-
-### Camera Configuration
-
-For Ubuntu 22.04 users, see our detailed setup guide:
-📖 [Camera Module v2 Ubuntu 22.04 Setup Guide](CameraModuleV2_Ubuntu22_Setup.md)
-
-## 🛠️ Troubleshooting
-
-### Common Issues
-
-**❌ Camera not detected:**
-```bash
-# Check camera module
-vcgencmd get_camera
-
-# Enable camera interface
-sudo raspi-config
-# Navigate to: Interface Options → Camera → Enable
-```
-
-**❌ Permission denied:**
-```bash
-# Make scripts executable
-chmod +x streaming_scripts/pi/*.sh
-chmod +x streaming_scripts/pc/*.sh
-```
-
-**❌ Network connection failed:**
-```bash
-# Check network connectivity
-ping $PC_IP
-ping $PI_IP
-
-# Verify firewall settings
-sudo ufw status
-```
-
-### Performance Optimization
-
-- **Reduce latency:** Lower video resolution or bitrate
-- **Improve quality:** Increase bitrate (may increase latency)
-- **CPU usage:** Use hardware encoding when available
 
 ## 🤝 Contributing
 
@@ -309,20 +253,33 @@ We welcome contributions! Please feel free to:
 
 ### Development Setup
 
+This project uses pre-commit hooks to maintain code quality and **prevent secrets from being committed**. To set up the development environment:
+
 ```bash
-# Install development dependencies
-pip install -r requirements-dev.txt
+# Install pre-commit
+pip install pre-commit
 
-# Run tests
-python -m pytest tests/
+# Install the pre-commit hooks
+pre-commit install
 
-# Check code style
-flake8 streaming_scripts/
+# Run all hooks on all files (optional)
+pre-commit run --all-files
 ```
+
+The pre-commit hooks will automatically:
+- **🔒 Prevent secrets from being committed** - Gitleaks scans for AWS keys, YouTube stream keys, and other sensitive data
+- **Format Python code** with Black
+- **Lint Python code** with Ruff
+- **Format shell scripts** with shfmt
+- **Check shell scripts** with ShellCheck
+- **Remove trailing whitespace** and fix line endings
+- **Check for large files** and security issues
+
+> **⚠️ Security First:** Always use pre-commit hooks when working with this project. They prevent accidental commits of AWS credentials, YouTube stream keys, and other sensitive information that could expose your accounts.
 
 ## 📚 Related Projects
 
-This repository is part of the **[ez-turtlebot3](https://github.com/ez-turtlebot3/ez-turtlebot3)** project, which provides comprehensive robotics development tools and resources.
+This repository is part of the **[ez-turtlebot3](https://github.com/ez-turtlebot3/)** project. In addition to adding these A/V streaming capabilities to a TurtleBot3, the project enables connecting analog sensors to the TurtleBot3 OpenCR board, then processing and broadcasting that analog data in ROS 2.
 
 ## 📄 License
 
