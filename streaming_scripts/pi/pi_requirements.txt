@@ -1,4 +1,6 @@
-# Required system packages
+# Required system packages for Raspberry Pi
+# Install with: sudo apt install $(cat pi_requirements.txt | grep -v '^#' | tr '\n' ' ')
+
 ffmpeg
 python3-pip
 python3-opencv
